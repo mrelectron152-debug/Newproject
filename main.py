@@ -5,6 +5,7 @@ L=34
 l=1
 r=1.7
 
+#
 Nsteps=10000
 freq=100
 count=0
