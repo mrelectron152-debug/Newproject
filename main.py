@@ -39,6 +39,7 @@ for i in range(N):
     for j in range(i):
         if distant(L, x[i], y[i], z[i], x[j], y[j], z[j])<r:
             i-=1
+            break
 
 for i in range(Nsteps):
     m=random.randint(0,N-1)
