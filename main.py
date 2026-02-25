@@ -5,7 +5,6 @@ L=34
 l=1
 r=1.7
 
-#
 Nsteps=10000
 freq=100
 count=0
@@ -42,6 +41,23 @@ for i in range(N):
         if distant(L, x[i], y[i], z[i], x[j], y[j], z[j])<2*r:
             i-=1
             break
+
+with open ('file.txt', 'a', encoding='utf-8') as f:
+    f.write(str(N))
+    f.write("\nSTEP=")
+    f.write(str(step))
+for j in range(N):
+    with open ('file.txt', 'a', encoding='utf-8') as f:
+        f.write("\nAr ")
+        f.write(str(x[j]))
+        f.write(" ")
+        f.write(str(y[j]))
+        f.write(" ")
+        f.write(str(z[j]))
+with open ('file.txt', 'a', encoding='utf-8') as f:
+    f.write("\n")
+step+=1
+
 
 for i in range(Nsteps):
 
@@ -84,3 +100,6 @@ for i in range(Nsteps):
                 y[m]=w[1]
                 z[m]=w[2]
                 print("шар", m)
+                break
+
+
