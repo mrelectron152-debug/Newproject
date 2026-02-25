@@ -39,30 +39,11 @@ for i in range(N):
     z[i] = random.uniform(0,L)  
     
     for j in range(i):
-        if distant(L, x[i], y[i], z[i], x[j], y[j], z[j])<r:
+        if distant(L, x[i], y[i], z[i], x[j], y[j], z[j])<2*r:
             i-=1
             break
 
 for i in range(Nsteps):
-    m=random.randint(0,N-1)
-    w=[x[m], y[m], z[m]]
-    x[m]+=random.uniform(-l/2,l/2)
-    if x[m]>L: x[m]-=L
-    if x[m]<=0: x[m]+=L
-    y[m]+=random.uniform(-l/2,l/2)
-    if y[m]>L: y[m]-=L
-    if y[m]<=0: y[m]+=L
-    z[m]+=random.uniform(-l/2,l/2)
-    if z[m]>L: z[m]-=L
-    if z[m]<=0: z[m]+=L
-
-    for j in range(N):
-        if j!=m:
-            if distant(L, x[m], y[m], z[m], x[j], y[j], z[j])<r:
-                x[m]=w[0]
-                y[m]=w[1]
-                z[m]=w[2]
-                print("шар", m)
 
     count+=1
     if count==freq:
@@ -82,3 +63,24 @@ for i in range(Nsteps):
         with open ('file.txt', 'a', encoding='utf-8') as f:
             f.write("\n")
         step+=1
+
+
+    m=random.randint(0,N-1)
+    w=[x[m], y[m], z[m]]
+    x[m]+=random.uniform(-l/2,l/2)
+    if x[m]>L: x[m]-=L
+    if x[m]<=0: x[m]+=L
+    y[m]+=random.uniform(-l/2,l/2)
+    if y[m]>L: y[m]-=L
+    if y[m]<=0: y[m]+=L
+    z[m]+=random.uniform(-l/2,l/2)
+    if z[m]>L: z[m]-=L
+    if z[m]<=0: z[m]+=L
+
+    for j in range(N):
+        if j!=m:
+            if distant(L, x[m], y[m], z[m], x[j], y[j], z[j])<2*r:
+                x[m]=w[0]
+                y[m]=w[1]
+                z[m]=w[2]
+                print("шар", m)
