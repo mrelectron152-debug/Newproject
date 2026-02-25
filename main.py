@@ -1,9 +1,10 @@
 import random
 import math
 N=100
-L=10
+L=34
 l=1
-r=0.1
+r=1.7
+
 Nsteps=100
 freq=10
 count=0
