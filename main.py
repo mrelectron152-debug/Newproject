@@ -2,7 +2,7 @@ import random
 import math
 N=100
 L=34
-l=1
+l=3
 r=1.7
 
 Nsteps=10000
