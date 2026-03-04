@@ -40,8 +40,9 @@ LZ=0
 
 if L**3<N*((2*r)**3):
     print("Ошибка размещения молекул на решётку, увеличьте размеры системы") 
+    exit()
 else:
-    place=math.cbrt(math.ceil(L**3/N))
+    place=L/(math.ceil(math.cbrt(N))+1) #вместо +1 можно запариться со знаками больше меньше в след цикле
     LX=place
     LY=place
     LZ=place
@@ -54,7 +55,7 @@ while 1==1:
                 y[Ncount]=LY
                 z[Ncount]=LZ
                 Ncount+=1
-                if Ncount>=N: break
+                if Ncount>=N-1: break
                 LZ+=place
             LZ=place
             if Ncount>=N: break
@@ -133,7 +134,7 @@ for i in range(Nsteps):
                 x[m]=w[0]
                 y[m]=w[1]
                 z[m]=w[2]
-                print("шар", m)
+                #print("шар", m)
                 break
 
 
