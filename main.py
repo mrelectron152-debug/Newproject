@@ -1,11 +1,11 @@
 import random
 import math
-N=100
-L=34
+N=500
+L=10
 l=3
-r=1.7
+r=0.5
 
-Nsteps=10000
+Nsteps=100000
 freq=100
 count=0
 step=1
@@ -42,15 +42,15 @@ if L**3<N*((2*r)**3):
     print("Ошибка размещения молекул на решётку, увеличьте размеры системы") 
     exit()
 else:
-    place=L/(math.ceil(math.cbrt(N))+1) #вместо +1 можно запариться со знаками больше меньше в след цикле
+    place=L/math.ceil(math.cbrt(N)) #вместо +1 можно запариться со знаками больше меньше в след цикле
     LX=place
     LY=place
     LZ=place
 
 while 1==1:
-    while LX<L:
-        while LY<L:
-            while LZ<L:
+    while LX<=L:
+        while LY<=L:
+            while LZ<=L:
                 x[Ncount]=LX
                 y[Ncount]=LY
                 z[Ncount]=LZ
