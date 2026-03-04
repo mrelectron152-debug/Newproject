@@ -2,13 +2,16 @@ import random
 import math
 N=500
 L=10
-l=3
+l=0.3
 r=0.5
 
 Nsteps=100000
 freq=100
 count=0
 step=1
+
+accept=0
+naccept=0
 
 def distant(L, xi, yi, zi, xj, yj, zj):
     dx=math.fabs(xi-xj)
@@ -128,6 +131,7 @@ for i in range(Nsteps):
     if z[m]>L: z[m]-=L
     if z[m]<=0: z[m]+=L
 
+    accept+=1
     for j in range(N):
         if j!=m:
             if distant(L, x[m], y[m], z[m], x[j], y[j], z[j])<2*r:
@@ -135,6 +139,7 @@ for i in range(Nsteps):
                 y[m]=w[1]
                 z[m]=w[2]
                 #print("шар", m)
+                naccept+=1
                 break
 
-
+print((accept-naccept)/accept)
