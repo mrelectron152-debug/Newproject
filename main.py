@@ -32,6 +32,39 @@ z = [0]*N
 
 w=[0, 0, 0]
 
+place=0
+Ncount=0
+LX=0
+LY=0
+LZ=0
+
+if L**3<N*((2*r)**3):
+    print("Ошибка размещения молекул на решётку, увеличьте размеры системы") 
+else:
+    place=math.cbrt(math.ceil(L**3/N))
+    LX=place
+    LY=place
+    LZ=place
+
+while 1==1:
+    while LX<L:
+        while LY<L:
+            while LZ<L:
+                x[Ncount]=LX
+                y[Ncount]=LY
+                z[Ncount]=LZ
+                Ncount+=1
+                if Ncount>=N: break
+                LZ+=place
+            LZ=place
+            if Ncount>=N: break
+            LY+=place
+        LY=place
+        if Ncount>=N: break
+        LX+=place
+    LX=place
+    if Ncount>=N: break
+'''
 for i in range(N):
     x[i] = random.uniform(0,L)
     y[i] = random.uniform(0,L)
@@ -41,6 +74,7 @@ for i in range(N):
         if distant(L, x[i], y[i], z[i], x[j], y[j], z[j])<2*r:
             i-=1
             break
+'''
 
 with open ('file.txt', 'a', encoding='utf-8') as f:
     f.write(str(N))
