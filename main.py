@@ -1,9 +1,15 @@
 import random
 import math
 N=500
-L=10
+L=34
 l=0.3
 r=0.5
+T=94.4
+
+sigma=3.4 # Надо всё перевести в Ангстремы
+epsilon=120 #Эпсилон/К больцмана = 120, но К потом мы сократили в формулах
+E=0
+allE=0
 
 Nsteps=100000
 freq=100
@@ -24,6 +30,15 @@ def distant(L, xi, yi, zi, xj, yj, zj):
     if dz>L-dz:
         dz=L-dz
     return math.sqrt(dx**2+dy**2+dz**2)
+
+def energyk(x,y,z,k,N,L,epsilon,sigma):
+    U=0
+    for i in range(N):
+        if i!=k:
+            d=distant(L,x[i],y[i],z[i],x[k],y[k],z[k])
+            U+=4*epsilon*((sigma/d)**12-(sigma/d)**6)
+    return U
+
 
 
 with open ('file.txt', 'w', encoding='utf-8') as f:
@@ -68,6 +83,8 @@ while 1==1:
         LX+=place
     LX=place
     if Ncount>=N: break
+
+#рандомное начальное расположение (почему-то иногда частицы накладываются друг на друга)
 '''
 for i in range(N):
     x[i] = random.uniform(0,L)
@@ -120,6 +137,9 @@ for i in range(Nsteps):
 
 
     m=random.randint(0,N-1)
+
+    Eb=energyk(x,y,z,m,N,L,epsilon,sigma)
+
     w=[x[m], y[m], z[m]]
     x[m]+=random.uniform(-l/2,l/2)
     if x[m]>L: x[m]-=L
@@ -131,6 +151,8 @@ for i in range(Nsteps):
     if z[m]>L: z[m]-=L
     if z[m]<=0: z[m]+=L
 
+    #Монте-Карло
+    '''
     accept+=1
     for j in range(N):
         if j!=m:
@@ -141,5 +163,15 @@ for i in range(Nsteps):
                 #print("шар", m)
                 naccept+=1
                 break
+    '''
+    accept+=1
+    Ea=energyk(x,y,z,m,N,L,epsilon,sigma)
+    p = min(1, math.exp((Eb-Ea)/T))
+    if random.random()>p:
+        x[m]=w[0]
+        y[m]=w[1]
+        z[m]=w[2]
+        naccept+=1
+
 
 print((accept-naccept)/accept)
