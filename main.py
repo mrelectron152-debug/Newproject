@@ -2,7 +2,7 @@ import random
 import math
 N=500
 L=34
-l=0.3
+l=0.8
 r=0.5
 T=94.4
 
