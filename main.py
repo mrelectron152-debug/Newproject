@@ -8,8 +8,10 @@ T=94.4
 
 sigma=3.4 # Надо всё перевести в Ангстремы
 epsilon=120 #Эпсилон/К больцмана = 120, но К потом мы сократили в формулах
+k=1.38*(10**(-23))
 E=0
 allE=0
+DallE=0
 
 Nsteps=100000
 freq=100
@@ -43,6 +45,9 @@ def energyk(x,y,z,k,N,L,epsilon,sigma):
 
 with open ('file.txt', 'w', encoding='utf-8') as f:
     f.write("")
+
+with open ('energy.txt', 'w', encoding='utf-8') as g:
+    g.write("")
 
 x = [0]*N
 y = [0]*N
@@ -113,6 +118,8 @@ with open ('file.txt', 'a', encoding='utf-8') as f:
     f.write("\n")
 step+=1
 
+for i in range(N):
+    allE+=energyk(x,y,z,i,N,L,epsilon,sigma)
 
 for i in range(Nsteps):
 
@@ -172,6 +179,16 @@ for i in range(Nsteps):
         y[m]=w[1]
         z[m]=w[2]
         naccept+=1
+        DallE+=0
+    else:
+        DallE+=(Ea-Eb)/Nsteps
+    with open ('energy.txt','a', encoding='utf-8') as g:
+        g.write(str(DallE*Nsteps))
+        g.write("\n")
 
 
 print((accept-naccept)/accept)
+print(allE)
+print(DallE)
+print(DallE+allE)
+print((DallE+allE)/(N*k*T))
