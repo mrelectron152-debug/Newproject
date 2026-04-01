@@ -2,8 +2,8 @@ import random
 import math
 N=500
 L=34
-l=0.8
-r=0.5
+l=0.3
+r=1.7
 T=94.4
 
 sigma=3.4 # Надо всё перевести в Ангстремы
@@ -13,7 +13,7 @@ E=0
 allE=0
 DallE=0
 
-Nsteps=100000
+Nsteps=300000
 freq=100
 count=0
 step=1
