@@ -181,7 +181,7 @@ for i in range(Nsteps):
         naccept+=1
         DallE+=0
     else:
-        DallE+=(Ea-Eb)/Nsteps
+        DallE+=((Ea-Eb)/Nsteps)
     with open ('energy.txt','a', encoding='utf-8') as g:
         g.write(str(DallE*Nsteps))
         g.write("\n")
