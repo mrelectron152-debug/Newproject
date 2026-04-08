@@ -2,7 +2,7 @@ import random
 import math
 N=500
 L=34
-l=0.3
+l=1.4
 r=1.7
 T=94.4
 
@@ -13,7 +13,7 @@ E=0
 allE=0
 DallE=0
 
-Nsteps=1200000
+Nsteps=500000
 freq=1000
 count=0
 step=1
@@ -61,7 +61,7 @@ LX=0
 LY=0
 LZ=0
 
-
+'''
 if L**3<N*((2*r)**3):
     print("Ошибка размещения молекул на решётку, увеличьте размеры системы") 
     exit()
@@ -96,7 +96,13 @@ for i in range(N):
     x[i] = random.uniform(0,L)
     y[i] = random.uniform(0,L)
     z[i] = random.uniform(0,L)  
-'''
+    '''
+    for j in range(i):
+        if distant(L, x[i], y[i], z[i], x[j], y[j], z[j])<10**(-1):
+            i-=1
+            break
+    '''
+
 
 with open ('file.txt', 'a', encoding='utf-8') as f:
     f.write(str(N))
@@ -169,7 +175,10 @@ for i in range(Nsteps):
     '''
     accept+=1
     Ea=energyk(x,y,z,m,N,L,epsilon,sigma)
-    p = min(1, math.exp((Eb-Ea)/T))
+    try:
+        p = min(1, math.exp((Eb-Ea)/T))
+    except OverflowError:
+        p=1
     if random.random()>p:
         x[m]=w[0]
         y[m]=w[1]
@@ -187,4 +196,4 @@ print((accept-naccept)/accept)
 print(allE)
 print(DallE*Nsteps)
 print(DallE*Nsteps+allE)
-print((DallE*Nsteps+allE)/(N*k*T))
+print((DallE*Nsteps+allE)/(N*k*T)) 
