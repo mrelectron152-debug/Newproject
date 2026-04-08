@@ -13,7 +13,7 @@ E=0
 allE=0
 DallE=0
 
-Nsteps=600000
+Nsteps=1200000
 freq=1000
 count=0
 step=1
@@ -61,6 +61,7 @@ LX=0
 LY=0
 LZ=0
 
+
 if L**3<N*((2*r)**3):
     print("Ошибка размещения молекул на решётку, увеличьте размеры системы") 
     exit()
@@ -89,17 +90,12 @@ while 1==1:
     LX=place
     if Ncount>=N: break
 
-#рандомное начальное расположение (почему-то иногда частицы накладываются друг на друга)
+
 '''
 for i in range(N):
     x[i] = random.uniform(0,L)
     y[i] = random.uniform(0,L)
     z[i] = random.uniform(0,L)  
-    
-    for j in range(i):
-        if distant(L, x[i], y[i], z[i], x[j], y[j], z[j])<2*r:
-            i-=1
-            break
 '''
 
 with open ('file.txt', 'a', encoding='utf-8') as f:
