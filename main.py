@@ -13,8 +13,8 @@ E=0
 allE=0
 DallE=0
 
-Nsteps=300000
-freq=100
+Nsteps=600000
+freq=1000
 count=0
 step=1
 
@@ -183,12 +183,12 @@ for i in range(Nsteps):
     else:
         DallE+=((Ea-Eb)/Nsteps)
     with open ('energy.txt','a', encoding='utf-8') as g:
-        g.write(str(DallE*Nsteps))
+        g.write(str(DallE*Nsteps+allE))
         g.write("\n")
 
 
 print((accept-naccept)/accept)
 print(allE)
-print(DallE)
-print(DallE+allE)
-print((DallE+allE)/(N*k*T))
+print(DallE*Nsteps)
+print(DallE*Nsteps+allE)
+print((DallE*Nsteps+allE)/(N*k*T))
