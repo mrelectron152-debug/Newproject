@@ -2,7 +2,7 @@ import random
 import math
 N=500
 L=34
-l=1.4
+l=2.4
 r=1.7
 T=94.4
 
@@ -13,7 +13,7 @@ E=0
 allE=0
 DallE=0
 
-Nsteps=1200000
+Nsteps=600000
 freq=1000
 count=0
 step=1
