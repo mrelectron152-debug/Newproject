@@ -62,7 +62,7 @@ LX=0
 LY=0
 LZ=0
 
-'''
+
 if L**3<N*((2*r)**3):
     print("Ошибка размещения молекул на решётку, увеличьте размеры системы") 
     exit()
@@ -105,7 +105,7 @@ while i < N:
             break
     print(i)
     i+=1
-
+'''
 
 
 with open ('file.txt', 'a', encoding='utf-8') as f:
