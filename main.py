@@ -13,7 +13,7 @@ E=0
 allE=0
 DallE=0
 
-Nsteps=1200000
+Nsteps=10000
 freq=1000
 count=0
 step=1
@@ -151,7 +151,7 @@ while i <Nsteps:
 
     m=random.randint(0,N-1)
 
-    Eb=energyk(x,y,z,m,N,L,epsilon,sigma)
+    Ef=energyk(x,y,z,m,N,L,epsilon,sigma)
 
     w=[x[m], y[m], z[m]]
     x[m]+=random.uniform(-l/2,l/2)
@@ -191,8 +191,8 @@ while i <Nsteps:
                 break
     '''
     accept+=1
-    Ea=energyk(x,y,z,m,N,L,epsilon,sigma)
-    p = min(1, math.exp((Eb-Ea)/T))
+    Es=energyk(x,y,z,m,N,L,epsilon,sigma)
+    p = min(1, math.exp(-(Es-Ef)/T))
     if random.random()>p:
         x[m]=w[0]
         y[m]=w[1]
@@ -200,7 +200,7 @@ while i <Nsteps:
         naccept+=1
         DallE+=0
     else:
-        DallE+=((Ea-Eb)/Nsteps)
+        DallE+=((Es-Ef)/Nsteps)
     with open ('energy.txt','a', encoding='utf-8') as g:
         g.write(str(DallE*Nsteps+allE))
         g.write("\n")
