@@ -13,7 +13,7 @@ E=0
 allE=0
 DallE=0
 
-Nsteps=500000
+Nsteps=1200000
 freq=1000
 count=0
 step=1
@@ -92,16 +92,19 @@ while 1==1:
 
 
 '''
-for i in range(N):
+i=1
+while i < N:
     x[i] = random.uniform(0,L)
     y[i] = random.uniform(0,L)
     z[i] = random.uniform(0,L)  
-    '''
+
     for j in range(i):
-        if distant(L, x[i], y[i], z[i], x[j], y[j], z[j])<10**(-1):
+        if distant(L, x[i], y[i], z[i], x[j], y[j], z[j])<(sigma):
             i-=1
             break
-    '''
+    print(i)
+    i+=1
+
 
 
 with open ('file.txt', 'a', encoding='utf-8') as f:
@@ -123,8 +126,9 @@ step+=1
 for i in range(N):
     allE+=energyk(x,y,z,i,N,L,epsilon,sigma)
 
-for i in range(Nsteps):
-
+while i <Nsteps:
+    i+=1
+    print(i/Nsteps)
     count+=1
     if count==freq:
         count=0
@@ -159,7 +163,20 @@ for i in range(Nsteps):
     z[m]+=random.uniform(-l/2,l/2)
     if z[m]>L: z[m]-=L
     if z[m]<=0: z[m]+=L
+    '''
+    sp=0
+    for t in range(N):
+        if distant(L, x[t], y[t], z[t], x[m], y[m], z[m])<(sigma/2):
+            i-=1
+            sp=1
+            x[m]=w[0]
+            y[m]=w[1]
+            z[m]=w[2]
 
+            break
+    if sp==1:
+        continue
+    '''
     #Монте-Карло
     '''
     accept+=1
@@ -175,10 +192,7 @@ for i in range(Nsteps):
     '''
     accept+=1
     Ea=energyk(x,y,z,m,N,L,epsilon,sigma)
-    try:
-        p = min(1, math.exp((Eb-Ea)/T))
-    except OverflowError:
-        p=1
+    p = min(1, math.exp((Eb-Ea)/T))
     if random.random()>p:
         x[m]=w[0]
         y[m]=w[1]
@@ -196,4 +210,4 @@ print((accept-naccept)/accept)
 print(allE)
 print(DallE*Nsteps)
 print(DallE*Nsteps+allE)
-print((DallE*Nsteps+allE)/(N*k*T)) 
+print((DallE*Nsteps+allE)/(N*T)) 
