@@ -1,6 +1,6 @@
 import random
 import math
-N=500
+N=864
 L=34
 l=2.4
 r=1.7
@@ -13,9 +13,10 @@ E=0
 allE=0
 DallE=0
 
-Nsteps=10000
+Nsteps=200000
 freq=1000
 count=0
+counts=0
 step=1
 
 accept=0
@@ -99,7 +100,7 @@ while i < N:
     z[i] = random.uniform(0,L)  
 
     for j in range(i):
-        if distant(L, x[i], y[i], z[i], x[j], y[j], z[j])<(sigma):
+        if distant(L, x[i], y[i], z[i], x[j], y[j], z[j])<(0.8*sigma):
             i-=1
             break
     print(i)
@@ -124,11 +125,11 @@ with open ('file.txt', 'a', encoding='utf-8') as f:
 step+=1
 
 for i in range(N):
-    allE+=energyk(x,y,z,i,N,L,epsilon,sigma)
+    allE+=0.5*energyk(x,y,z,i,N,L,epsilon,sigma)
 
 while i <Nsteps:
     i+=1
-    print(i/Nsteps)
+    #print(i/Nsteps)
     count+=1
     if count==freq:
         count=0
@@ -147,7 +148,13 @@ while i <Nsteps:
         with open ('file.txt', 'a', encoding='utf-8') as f:
             f.write("\n")
         step+=1
-
+    counts+=1
+    if counts==10*freq:
+        counts=0
+        allEf=0
+        for j in range(N):
+            allEf+=0.5*energyk(x, y, z, j, N, L, epsilon, sigma)
+        print(allEf/(DallE*Nsteps+allE), " ", allEf, " ", DallE*Nsteps+allE)
 
     m=random.randint(0,N-1)
 
