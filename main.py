@@ -13,7 +13,7 @@ E=0
 allE=0
 DallE=0
 
-Nsteps=600000
+Nsteps=1200000
 freq=1000
 count=0
 step=1
