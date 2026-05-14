@@ -1,3 +1,4 @@
+'''
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -9,7 +10,7 @@ eps_delta = 5.0     #анизотропия
 
 phi_0 = 0
 phi_L = np.pi / 2
-theta_bc = np.pi / 2
+theta_bc = 0.0 #np.pi / 2
 def relax_profile(theta, phi, E, n_steps=5000):
     alpha = 0.005 * dz**2 
     
@@ -26,8 +27,7 @@ def relax_profile(theta, phi, E, n_steps=5000):
             dtheta = (theta[i+1] - theta[i-1]) / (2*dz)
             dphi = (phi[i+1] - phi[i-1]) / (2*dz)
             
-            residual_theta = K * d2theta - K * sin_th * cos_th * dphi**2 - \
-                             eps_delta * E**2 * sin_th * cos_th
+            residual_theta = K * d2theta - K * sin_th * cos_th * dphi**2 - eps_delta * E**2 * sin_th * cos_th
             residual_phi = sin_th**2 * d2phi + 2 * sin_th * cos_th * dtheta * dphi
             
             theta_new[i] += alpha * residual_theta
@@ -38,7 +38,7 @@ def relax_profile(theta, phi, E, n_steps=5000):
         phi_new[0] = phi_0
         phi_new[N] = phi_L
         
-        theta_new = np.clip(theta_new, 0.001, np.pi - 0.001)
+        theta_new = np.clip(theta_new, 0.0, np.pi / 2)
         
         theta = theta_new
         phi = phi_new
@@ -53,9 +53,13 @@ def relax_profile(theta, phi, E, n_steps=5000):
 
 z = np.linspace(0, L, N+1)
 
-theta = np.full(N+1, np.pi/2)
-perturbation = 0.1 * np.exp(-((z - 0.5)/0.15)**2) 
-theta = theta - perturbation
+
+theta = np.zeros(N+1)  # Заменяем np.full(N+1, np.pi/2) на нули
+perturbation = 0.1 * np.sin(np.pi * z / L)  # Правильное синусоидальное возмущение
+theta = theta + perturbation  # Добавляем, чтобы уйти от тривиального нуля
+#theta = np.full(N+1, np.pi/2)
+#perturbation = 0.1 * np.exp(-((z - 0.5)/0.15)**2) 
+#theta = theta - perturbation
 
 phi = np.linspace(phi_0, phi_L, N+1)
 
@@ -137,3 +141,115 @@ for idx, E_val in enumerate(E_to_save):
 
 # Удаляем 8-й пустой график
 fig.delaxes(axes[7])
+'''
+
+import numpy as np
+import matplotlib.pyplot as plt
+import matplotlib.ticker as ticker
+
+N = 100    # число слоев нематика           
+L = 1.0    # толщина
+dz = L / N
+K = 1.0    # одноконстантное приближение
+eps_delta = 5.0     # ИСПРАВЛЕНИЕ: положительная анизотропия (Delta eps > 0)
+
+phi_0 = 0
+phi_L = np.pi / 2
+theta_bc = 0.0 
+
+def relax_profile(theta, phi, E, n_steps=10000):
+    # Уменьшим шаг по времени для стабильности при сильных полях
+    alpha = 0.002 * dz**2 
+    
+    for step in range(n_steps):
+        theta_new = theta.copy()
+        phi_new = phi.copy()
+        
+        for i in range(1, N):
+            sin_th = np.sin(theta[i])
+            cos_th = np.cos(theta[i])
+            
+            d2theta = (theta[i+1] - 2*theta[i] + theta[i-1]) / dz**2
+            d2phi = (phi[i+1] - 2*phi[i] + phi[i-1]) / dz**2
+            dtheta = (theta[i+1] - theta[i-1]) / (2*dz)
+            dphi = (phi[i+1] - phi[i-1]) / (2*dz)
+            
+            # ИСПРАВЛЕНИЕ: Знак ПЛЮС перед eps_delta для Delta eps > 0
+            # Электрическое поле теперь тянет директор вверх (к theta = pi/2)
+            residual_theta = K * d2theta - K * sin_th * cos_th * dphi**2 + eps_delta * E**2 * sin_th * cos_th
+            residual_phi = sin_th**2 * d2phi + 2 * sin_th * cos_th * dtheta * dphi
+            
+            theta_new[i] += alpha * residual_theta
+            phi_new[i] += alpha * residual_phi
+        
+        # Граничные условия (жесткое сцепление на подложках)
+        theta_new[0] = theta_bc
+        theta_new[N] = theta_bc
+        phi_new[0] = phi_0
+        phi_new[N] = phi_L
+        
+        # Физическое ограничение углов
+        theta_new = np.clip(theta_new, 0.0, np.pi / 2)
+        
+        # Проверка сходимости
+        if step % 200 == 0:
+            if np.max(np.abs(theta_new - theta)) < 1e-7:
+                theta = theta_new
+                phi = phi_new
+                break
+                
+        theta = theta_new
+        phi = phi_new
+                
+    return theta, phi
+
+# Координатная сетка
+z = np.linspace(0, L, N+1)
+# Расширим диапазон полей, чтобы увидеть выход на насыщение (theta -> pi/2)
+E_values = np.linspace(0, 30, 60)
+
+theta_mid = []
+phi_mid = []
+profiles = {}
+# Ключевые точки для построения профилей (включая сильное поле 30)
+E_to_save = [0, 2, 5, 10, 15, 20, 30]
+
+for E in E_values:
+    # Начальный сброс для каждого E: ЖK изначально плоский + малый шум для старта
+    theta_init = 0.01 * np.sin(np.pi * z / L) 
+    phi_init = np.linspace(phi_0, phi_L, N+1)
+    
+    theta_res, phi_res = relax_profile(theta_init, phi_init, E, n_steps=15000)
+    
+    for E_save in E_to_save:
+        if abs(E - E_save) < 0.3:
+            profiles[E_save] = (theta_res.copy(), phi_res.copy())
+            break
+    
+    mid = N // 2
+    theta_mid.append(theta_res[mid])
+    phi_mid.append(phi_res[mid])
+
+# =========================================================
+# ВИЗУАЛИЗАЦИЯ 1: ТРАЕКТОРИЯ (В ЕДИНИЦАХ PI)
+# =========================================================
+plt.figure(figsize=(8, 6))
+
+phi_mid_pi = np.array(phi_mid) / np.pi
+theta_mid_pi = np.array(theta_mid) / np.pi
+
+plt.plot(phi_mid_pi, theta_mid_pi, 'b-o', linewidth=2, markersize=3, label='Траектория')
+plt.xlabel(r'$\phi / \pi$', fontsize=12)
+plt.ylabel(r'$\theta / \pi$', fontsize=12)
+plt.title('Траектория директора в центре ячейки ($\Delta\epsilon > 0$)', fontsize=12)
+plt.grid(True, linestyle=':', alpha=0.6)
+plt.legend()
+
+ax = plt.gca()
+ax.xaxis.set_major_locator(ticker.MultipleLocator(0.1))
+ax.yaxis.set_major_locator(ticker.MultipleLocator(0.1))
+plt.xlim(-0.05, 0.55)
+plt.ylim(-0.05, 0.55)
+plt.tight_layout()
+plt.savefig('plotforce.png')
+plt.close()
